@@ -1,4 +1,4 @@
-package parser;
+package App.parserNBKI.parser;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -34,7 +34,7 @@ public class ProfilePage {
         refreshRate.click();
     }
 
-    public void exitBtn() {
+    public void exitBtn(){
         exitBtn.click();
     }
 
@@ -42,7 +42,7 @@ public class ProfilePage {
         logoutBtn.click();
     }
 
-    public void  history() {
+    public void  history(){
         history.click();
     }
 }
