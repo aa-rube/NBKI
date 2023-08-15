@@ -47,6 +47,7 @@ public class SiteParser {
         profilePage.userLogout();
 
     }
+
     public static String getRating(User user) throws Exception {
         parserSite();
         login(user);

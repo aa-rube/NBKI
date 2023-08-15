@@ -2,6 +2,7 @@ package App.Bot.TelegramBot;
 
 import App.Bot.Services.CreateUser;
 import App.Bot.Services.EmailValidator;
+import App.Bot.Services.MessageSender;
 import App.Bot.Services.TimeConverter;
 import App.Bot.config.BotConfig;
 import App.parserNBKI.updateSevice.Update;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 
 @Component
 @AllArgsConstructor
-public class Bot extends TelegramLongPollingBot {
+public class Bot extends TelegramLongPollingBot implements MessageSender {
     private final BotConfig botConfig;
 
     @Override
@@ -43,39 +44,57 @@ public class Bot extends TelegramLongPollingBot {
 
             if ("/start".equals(messageText)) {
                 start(chatId, userName);
+                return;
+            }
+
+            if("/now".equals(messageText)) {
+                sendMessage(chatId, "Данные формируются. Время ожидания около 30 секунд");
+                HashMap<Long, User> userHashMap = reader.read();
+
+                Update rate = new Update(this);
+                try {
+                    sendMessage(chatId, rate.getRateString(userHashMap.get(chatId)));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                return;
             }
 
             if (messageText.contains("@") && EmailValidator.isValid(messageText)) {
                 createLogin(chatId, update);
+                return;
             }
 
-            if (userMap.get(chatId).getPasswordNBKI().equals("0")) {
+            if (userMap.get(chatId).getPasswordNBKI().equals("0O0") &&
+                    userMap.get(chatId).getLoginNBKI().contains("@")) {
                 createPassword(chatId, messageText);
+                return;
             }
 
             if (TimeConverter.isTimePeriod(messageText)) {
                 createPeriodUpdate(chatId, messageText);
             } else {
-                String str = "Не верный формат. Повторите пожалуйста еще раз.";
-                sendMessage(chatId, str);
+                sendMessage(chatId, "Не верный формат. Попробуйте пожалуйста еще раз.");
             }
+
         }
     }
 
     private void start(Long chatId, String name) {
         CreateUser createUser = new CreateUser();
         if (createUser.isUserExist(chatId)) {
-            String answer = "Аккаунт существует.";
-            sendMessage(chatId, answer);
+            String answer = "Ваши данные уже сохранены.";
+            sendRateMessage(chatId, answer);
+            return;
         }
 
         String answer = "Добро пожаловать в чат-бот НБКИ!\n" +
                 name + ", этот бот создан, чтобы помочь Вам следить за вашим официальным " +
-                "рейтингом в Национальном Бюро Кредитной Истории." +
+                "рейтингом в Национальном Бюро Кредитной Истории. " +
                 "Для начала работы, пожалуйста, введите вашу электронную " +
                 "почту, которая привязана к вашему аккаунту в НБКИ.";
 
-        sendMessage(chatId, answer);
+        sendRateMessage(chatId, answer);
     }
 
     private void createLogin(long chatId, org.telegram.telegrambots.meta.api.objects.Update update) {
@@ -116,23 +135,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    @Scheduled(fixedRate = 60_000)
-    public void refreshRate() throws Exception {
-        Update rate = new Update();
-        HashMap<Long, String> userData = rate.checkTImeToUp();
-
-        if(userData.size() > 0) {
-            for (Long key : userData.keySet()) {
-                sendMessage(key, userData.get(key));
-            }
-
-        } else {
-            System.out.println("Nothing to send");
-        }
-    }
-
     public void sendMessage(long chatId, String text) {
-
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
@@ -141,5 +144,14 @@ public class Bot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendRateMessage(Long chatId, String message) {
+        sendMessage(chatId, message);
+    }
+    @Scheduled(fixedRate = 60_000)
+    public void refreshRate() throws Exception {
+        Update rate = new Update(this);
+        rate.checkTImeToUp();
     }
 }

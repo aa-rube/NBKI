@@ -3,20 +3,20 @@
     "chatId" : 6039244146,
     "userName" : "alex_rube_arg",
     "name" : "Александр",
-    "loginNBKI" : "alexrube93@gmail.com",
-    "passwordNBKI" : "gnjXhOZb7HVz",
-    "refreshPeriodInHours" : 1,
-    "lastUpdate" : "2023-08-14T07:43:09",
+    "loginNBKI" : "onixmore@gmail.com",
+    "passwordNBKI" : "9wy+-A-2ycqZFPt",
+    "refreshPeriodInHours" : 12,
+    "lastUpdate" : "2023-08-14T23:55:24",
     "paid" : true
   },
   "795363892" : {
     "chatId" : 795363892,
     "userName" : "i_amallears",
     "name" : "алекс",
-    "loginNBKI" : "onixmore@gmail.com",
-    "passwordNBKI" : "9wy+-A-2ycqZFPt",
-    "refreshPeriodInHours" : 1,
-    "lastUpdate" : "2023-08-14T07:43:34",
+    "loginNBKI" : "alexrube93@gmail.com",
+    "passwordNBKI" : "gnjXhOZb7HVz",
+    "refreshPeriodInHours" : 5,
+    "lastUpdate" : "2023-08-15T04:54:13",
     "paid" : true
   }
 }

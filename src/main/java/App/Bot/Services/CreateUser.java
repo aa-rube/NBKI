@@ -1,7 +1,5 @@
 package App.Bot.Services;
 
-import App.Bot.TelegramBot.Bot;
-import App.Bot.config.BotConfig;
 import App.utils.JsonHashMapReader;
 import App.utils.JsonHashMapWriter;
 import App.model.User;
@@ -22,12 +20,12 @@ public class CreateUser {
         } else {
            return;
         }
-
+        user.setPasswordNBKI("0O0");
         user.setChatId(update.getMessage().getChatId());
         user.setName(update.getMessage().getFrom().getFirstName());
         user.setUserName(update.getMessage().getFrom().getUserName());
         user.setLoginNBKI(update.getMessage().getText());
-        user.setPasswordNBKI("0");
+
         user.setPaid(true);
         user.setLastUpdate(LocalDateTime.now());
         userMap.put(chatId, user);
