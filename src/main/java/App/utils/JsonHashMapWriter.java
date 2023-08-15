@@ -12,7 +12,7 @@ public class JsonHashMapWriter {
 
     public void writeUserHashMap(User user) {
         JsonHashMapReader reader = new JsonHashMapReader();
-        HashMap<Long, User> usersMap = reader.read();
+        HashMap<Long, User> usersMap = reader.getUsersHashMap();
 
         usersMap.remove(user.getChatId());
         usersMap.put(user.getChatId(), user);

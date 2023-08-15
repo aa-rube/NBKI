@@ -1,30 +1,33 @@
 package App.parserNBKI.updateSevice;
 
-import App.Bot.Services.MessageSender;
+import App.Bot.Services.MessageSendingService;
 import App.utils.JsonHashMapReader;
 import App.model.User;
 import App.parserNBKI.parser.SiteParser;
 import App.utils.JsonHashMapWriter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
-public class Update {
+@Component
+public class UpdateRating {
 
-    private final MessageSender messageSender;
+    private final MessageSendingService messageSendingService;
     private final StringBuilder rate = new StringBuilder();
     private final LocalDateTime now = LocalDateTime.now();
 
-    public Update(MessageSender messageSender) {
-        this.messageSender = messageSender;
+    @Autowired
+    public UpdateRating(MessageSendingService messageSendingService) {
+        this.messageSendingService = messageSendingService;
     }
+
 
     public void checkTImeToUp() throws Exception {
         JsonHashMapReader hashMapUsers = new JsonHashMapReader();
-        HashMap<Long, User> users = hashMapUsers.read();
+        HashMap<Long, User> users = hashMapUsers.getUsersHashMap();
         LocalDateTime now = LocalDateTime.now();
 
         for (User user : users.values()) {
@@ -38,7 +41,8 @@ public class Update {
     }
 
     private void getScheduleUsersRate(User user) throws Exception {
-        messageSender.sendRateMessage(user.getChatId(), getRateString(user));
+        messageSendingService.sendMsg(user.getChatId(), getRateString(user));
+
         JsonHashMapWriter writer = new JsonHashMapWriter();
         writer.writeUserHashMap(user);
     }

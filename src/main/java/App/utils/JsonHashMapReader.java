@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class JsonHashMapReader {
 
-    public HashMap<Long, User> read() {
+    public HashMap<Long, User> getUsersHashMap() {
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.registerModule(new JavaTimeModule());

@@ -1,4 +1,4 @@
-package App.Bot.Services;
+package App.Bot.functions;
 
 import java.util.regex.*;
 
