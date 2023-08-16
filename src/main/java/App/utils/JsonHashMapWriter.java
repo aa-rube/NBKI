@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class JsonHashMapWriter {
 
-    public void writeUserHashMap(User user) {
+    public synchronized void writeUserHashMap(User user) {
         JsonHashMapReader reader = new JsonHashMapReader();
         HashMap<Long, User> usersMap = reader.getUsersHashMap();
 
@@ -19,7 +19,7 @@ public class JsonHashMapWriter {
         writeToFile(usersMap);
     }
 
-    public void writeToFile(HashMap<Long, User> usersMap) {
+    public synchronized void writeToFile(HashMap<Long, User> usersMap) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
 

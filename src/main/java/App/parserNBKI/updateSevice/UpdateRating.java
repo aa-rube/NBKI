@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class UpdateRating {
 
     private final MessageSendingService messageSendingService;
-    private final StringBuilder rate = new StringBuilder();
+    private final StringBuffer rate = new StringBuffer();
     private final LocalDateTime now = LocalDateTime.now();
 
     @Autowired
@@ -25,7 +25,7 @@ public class UpdateRating {
     }
 
 
-    public void checkTImeToUp() throws Exception {
+    public synchronized void checkTImeToUp() throws Exception {
         JsonHashMapReader hashMapUsers = new JsonHashMapReader();
         HashMap<Long, User> users = hashMapUsers.getUsersHashMap();
         LocalDateTime now = LocalDateTime.now();
@@ -40,18 +40,16 @@ public class UpdateRating {
         }
     }
 
-    private void getScheduleUsersRate(User user) throws Exception {
+    private synchronized void getScheduleUsersRate(User user) throws Exception {
         messageSendingService.sendMsg(user.getChatId(), getRateString(user));
-
         JsonHashMapWriter writer = new JsonHashMapWriter();
         writer.writeUserHashMap(user);
     }
 
-    public String getRateString(User user) throws Exception {
+    public synchronized String getRateString(User user) throws Exception {
         rate.setLength(0);
         rate.append(SiteParser.getRating(user));
         user.setLastUpdate(now);
         return rate.toString();
     }
-
 }

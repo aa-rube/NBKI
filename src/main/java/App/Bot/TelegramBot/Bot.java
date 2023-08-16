@@ -13,12 +13,14 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.concurrent.ExecutorService;
+
 @Component
 @AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final ChatService chatService;
-
+    private final ExecutorService executorService;
     @Override
     public String getBotUsername() {
         return botConfig.getBotName();
@@ -31,32 +33,34 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        JsonHashMapReader reader = new JsonHashMapReader();
 
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            Long chatId = update.getMessage().getChatId();
-            User currentUser = reader.getUsersHashMap().get(chatId);
+            JsonHashMapReader reader = new JsonHashMapReader();
 
-            switch (messageText) {
-                case "/start":
-                    chatService.start(chatId, update.getMessage().getFrom().getFirstName());
-                    break;
-                case "/now":
-                    chatService.sendRatingRightNow(chatId, reader.getUsersHashMap());
-                    break;
-                default:
-                    if (messageText.contains("@") && EmailValidator.isValid(messageText)) {
-                        chatService.createLogin(chatId, update);
-                    } else if (currentUser.getPasswordNBKI().equals("p") && currentUser.getLoginNBKI().contains("@")) {
-                        chatService.createPassword(chatId, messageText);
-                    } else if (TimeConverter.isTimePeriod(messageText)) {
-                        chatService.createPeriodUpdate(chatId, messageText);
-                    } else {
-                        chatService.wrongFormat(chatId);
+            executorService.submit(() -> {
+
+                String messageText = update.getMessage().getText();
+                Long chatId = update.getMessage().getChatId();
+                User currentUser = reader.getUsersHashMap().get(chatId);
+
+                switch (messageText) {
+                    case "/start" -> chatService.start(chatId, update.getMessage().getFrom().getFirstName());
+                    case "/now" -> chatService.sendRatingRightNow(chatId);
+                    default -> {
+                        if (messageText.contains("@") && EmailValidator.isValid(messageText)) {
+                            chatService.createLogin(chatId, update);
+                        } else if (currentUser.getPasswordNBKI().equals("p")
+                                && currentUser.getLoginNBKI().contains("@")) {
+                            chatService.createPassword(chatId, messageText);
+                        } else if (TimeConverter.isTimePeriod(messageText)) {
+                            chatService.createPeriodUpdate(chatId, messageText);
+                        } else {
+                            chatService.wrongFormat(chatId);
+                        }
                     }
-                    break;
-            }
+                }
+            });
         }
     }
+
 }

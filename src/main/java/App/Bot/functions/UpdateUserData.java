@@ -55,8 +55,4 @@ public class UpdateUserData {
         }
     }
 
-    public boolean isUserExist(long chatId) {
-        JsonHashMapReader reader = new JsonHashMapReader();
-        return  reader.getUsersHashMap().containsKey(chatId);
-    }
 }
