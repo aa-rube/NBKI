@@ -1,23 +1,25 @@
 package App.Bot.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class PayController {
-    @GetMapping("/freekassa_notification")
-    public void notification(String notification) {
+
+    @PostMapping("/fkpayment_notification")
+    public String notification(@RequestBody String notification) {
         System.out.println(notification);
+        return "MERCHANT_ID:1000:tGn$z}hc7OnR]c@:001";
     }
 
-    @GetMapping("/freekassa_bad")
+    @GetMapping("/fkpayment_bad")
     public void bad() {
-        System.out.println("freekassa_bad");
+        System.out.println("fkpayment_bad");
     }
 
-    @GetMapping("/freekassa_good")
+    @GetMapping("/fkpayment_good")
     public void good() {
-        System.out.println("good");
+        System.out.println("fkpayment_good");
     }
-
 }
