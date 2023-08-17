@@ -18,14 +18,14 @@ public class MessageSendingService {
         this.context = context;
     }
 
-    public synchronized void sendMsg(Long chatId, String message) {
+    public void sendMsg(Long chatId, String message) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(chatId));
         sendMessage.setText(message);
         executeMsg(sendMessage);
     }
 
-    public synchronized void sendMsg(Long chatId, String message, ReplyKeyboardMarkup keyboardMarkup) {
+    public void sendMsg(Long chatId, String message, ReplyKeyboardMarkup keyboardMarkup) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(String.valueOf(chatId));
         sendMessage.setText(message);
@@ -34,7 +34,7 @@ public class MessageSendingService {
         executeMsg(sendMessage);
     }
 
-    public synchronized void sendMsg(Long chatId, String message, InlineKeyboardMarkup inlineKeyboard) {
+    public void sendMsg(Long chatId, String message, InlineKeyboardMarkup inlineKeyboard) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId.toString());
         sendMessage.setText(message);
@@ -43,7 +43,7 @@ public class MessageSendingService {
         executeMsg(sendMessage);
     }
 
-    private synchronized void executeMsg(SendMessage sendMessage) {
+    private void executeMsg(SendMessage sendMessage) {
         try {
             TelegramLongPollingBot bot = context.getBean(TelegramLongPollingBot.class);
             bot.execute(sendMessage);

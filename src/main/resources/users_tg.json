@@ -18,7 +18,7 @@
     "passwordNBKI" : "gnjXhOZb7HVz",
     "refreshPeriodInHours" : 1,
     "lastUpdate" : "2023-08-16T19:16:20",
-    "paid" : false,
+    "paid" : true,
     "accountSetupComplete" : true
   },
   "5451244591" : {
@@ -35,7 +35,7 @@
   "795363892" : {
     "chatId" : 795363892,
     "userName" : "Александр",
-    "name" : null,
+    "name" : true,
     "loginNBKI" : "alexrube93@gmail.com",
     "passwordNBKI" : "gnjXhOZb7HVz",
     "refreshPeriodInHours" : 1,

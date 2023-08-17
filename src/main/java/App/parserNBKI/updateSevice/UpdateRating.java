@@ -18,12 +18,10 @@ public class UpdateRating {
     private final MessageSendingService messageSendingService;
     private final StringBuffer rate = new StringBuffer();
     private final LocalDateTime now = LocalDateTime.now();
-
     @Autowired
     public UpdateRating(MessageSendingService messageSendingService) {
         this.messageSendingService = messageSendingService;
     }
-
 
     public synchronized void checkTImeToUp() throws Exception {
         JsonHashMapReader hashMapUsers = new JsonHashMapReader();

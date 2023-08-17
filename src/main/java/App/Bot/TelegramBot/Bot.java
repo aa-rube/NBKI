@@ -82,7 +82,7 @@ public class Bot extends TelegramLongPollingBot {
         int messageId = update.getCallbackQuery().getMessage().getMessageId();
         CheckInt checkInt = new CheckInt();
         if(callbackData.equals("close&send")) {
-            String text = "Ok";
+            String text = "";
             editMessageText(chatId,messageId,text);
             return;
         }
@@ -120,9 +120,9 @@ public class Bot extends TelegramLongPollingBot {
         newMessage.setChatId(chatId);
         newMessage.setMessageId(messageId);
         newMessage.setText(text);
-        newMessage.setReplyMarkup(null); // Это удалит кнопки
+        newMessage.setReplyMarkup(null);
         try {
-            execute(newMessage); // Отправка обновленного сообщения
+            execute(newMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

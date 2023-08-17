@@ -11,7 +11,7 @@ public class PayController {
         System.out.println(notification);
 
 
-        return "YES"; 
+        return "YES";
     }
 
     @GetMapping("/fkpayment_bad")

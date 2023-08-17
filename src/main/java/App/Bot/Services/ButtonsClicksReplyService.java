@@ -1,5 +1,6 @@
 package App.Bot.Services;
 
+import App.Bot.functions.UpdateUserData;
 import App.model.User;
 import App.parserNBKI.updateSevice.UpdateRating;
 import App.utils.JsonHashMapReader;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 
 @Component
 public class ButtonsClicksReplyService {
+    UpdateUserData updateUserData = new UpdateUserData();
     private final MessageSendingService messageSendingService;
     private final UpdateRating updateRating;
     private final KeyboardService keyboardService = new KeyboardService();
@@ -47,7 +49,7 @@ public class ButtonsClicksReplyService {
         messageSendingService.sendMsg(chatId, answer, keyboardService.getTimePeriods());
     }
 
-    public void setTimeUpdate(long chatId, String time) {
-
+    public void setTimeUpdate(long chatId, String hours) {
+        updateUserData.changeUpdateTime(chatId,Integer.parseInt(hours));
     }
 }
