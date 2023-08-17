@@ -16,8 +16,8 @@
     "name" : null,
     "loginNBKI" : "alexrube93@gmail.com",
     "passwordNBKI" : "gnjXhOZb7HVz",
-    "refreshPeriodInHours" : 1,
-    "lastUpdate" : "2023-08-16T19:16:20",
+    "refreshPeriodInHours" : 3,
+    "lastUpdate" : "2023-08-17T23:58:54",
     "paid" : true,
     "accountSetupComplete" : true
   },
@@ -32,10 +32,21 @@
     "paid" : false,
     "accountSetupComplete" : false
   },
+  "514387120" : {
+    "chatId" : 514387120,
+    "userName" : "Magomed",
+    "name" : null,
+    "loginNBKI" : "maga231766@gmail.com",
+    "passwordNBKI" : "Marik0-san",
+    "refreshPeriodInHours" : 144,
+    "lastUpdate" : "2023-08-18T00:03:14",
+    "paid" : false,
+    "accountSetupComplete" : true
+  },
   "795363892" : {
     "chatId" : 795363892,
     "userName" : "Александр",
-    "name" : true,
+    "name" : "true",
     "loginNBKI" : "alexrube93@gmail.com",
     "passwordNBKI" : "gnjXhOZb7HVz",
     "refreshPeriodInHours" : 1,
