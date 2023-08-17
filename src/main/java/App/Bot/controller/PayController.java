@@ -1,16 +1,17 @@
 package App.Bot.controller;
 
+import App.model.FkNotification;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 public class PayController {
 
     @PostMapping("/fkpayment_notification")
-    public String notification(@RequestBody String notification) {
+    public String notification(@ModelAttribute FkNotification notification) {
         System.out.println(notification);
-        return "MERCHANT_ID:1000:tGn$z}hc7OnR]c@:001";
+
+
+        return "YES"; 
     }
 
     @GetMapping("/fkpayment_bad")
