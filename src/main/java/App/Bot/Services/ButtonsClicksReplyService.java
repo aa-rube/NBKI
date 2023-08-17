@@ -50,6 +50,6 @@ public class ButtonsClicksReplyService {
     }
 
     public void setTimeUpdate(long chatId, String hours) {
-        updateUserData.changeUpdateTime(chatId,Integer.parseInt(hours));
+        updateUserData.setPeriodUpdate(chatId,Integer.parseInt(hours));
     }
 }

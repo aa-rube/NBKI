@@ -82,13 +82,13 @@ public class Bot extends TelegramLongPollingBot {
         int messageId = update.getCallbackQuery().getMessage().getMessageId();
         CheckInt checkInt = new CheckInt();
         if(callbackData.equals("close&send")) {
-            String text = "";
-            editMessageText(chatId,messageId,text);
+            editMessageText(chatId,messageId,"Вы можете всегда вернуться к этому.");
             return;
         }
 
         if (checkInt.isInt(callbackData)) {
             buttonsClicksReplyService.setTimeUpdate(chatId, callbackData);
+            editMessageText(chatId, messageId,"Период успешно установлен!");
         }
 //        switch (callbackData) {
 //            case "3 часа":

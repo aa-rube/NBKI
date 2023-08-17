@@ -67,7 +67,7 @@ public class UpdateUserData {
         }
     }
 
-    public void changeUpdateTime(long chatId, int countHours) {
+    public void setPeriodUpdate(long chatId, int countHours) {
         JsonHashMapReader reader = new JsonHashMapReader();
         HashMap<Long, User> userMap = reader.getUsersHashMap();
         User user = userMap.get(chatId);
