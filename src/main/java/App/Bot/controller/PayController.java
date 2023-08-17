@@ -8,18 +8,18 @@ import java.util.*;
 @RestController
 public class PayController {
     @GetMapping("/notification")
-    public Map<String, Boolean> notification() {
-        return Map.of("result", true);
+    public void notification(String notification) {
+        System.out.println(notification);
     }
 
     @GetMapping("/bad")
-    public Map<String, Boolean> bad() {
-        return Map.of("error", false);
+    public void bad() {
+        System.out.println("bad");
     }
 
     @GetMapping("/good")
-    public Map<String, Boolean> good() {
-        return Map.of("good", true);
+    public void good() {
+        System.out.println("good");
     }
 
 }
