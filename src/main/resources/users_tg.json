@@ -21,6 +21,17 @@
     "paid" : false,
     "accountSetupComplete" : true
   },
+  "5451244591" : {
+    "chatId" : 5451244591,
+    "userName" : "Jon",
+    "name" : null,
+    "loginNBKI" : "/start",
+    "passwordNBKI" : "null",
+    "refreshPeriodInHours" : 0,
+    "lastUpdate" : "2023-08-17T07:57:31",
+    "paid" : false,
+    "accountSetupComplete" : false
+  },
   "795363892" : {
     "chatId" : 795363892,
     "userName" : "Александр",
