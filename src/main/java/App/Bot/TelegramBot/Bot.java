@@ -1,6 +1,7 @@
 package App.Bot.TelegramBot;
 
-import App.Bot.Services.ChatService;
+import App.Bot.Services.ButtonsClicksReplyService;
+import App.Bot.Services.CreateUserService;
 import App.Bot.functions.EmailValidator;
 import App.Bot.functions.TimeConverter;
 import App.Bot.config.BotConfig;
@@ -19,8 +20,9 @@ import java.util.concurrent.ExecutorService;
 @AllArgsConstructor
 public class Bot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
-    private final ChatService chatService;
+    private final CreateUserService createUserService;
     private final ExecutorService executorService;
+    private final ButtonsClicksReplyService buttonsClicksReplyService;
     @Override
     public String getBotUsername() {
         return botConfig.getBotName();
@@ -33,34 +35,37 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
         if (update.hasMessage() && update.getMessage().hasText()) {
-            JsonHashMapReader reader = new JsonHashMapReader();
-
-            executorService.submit(() -> {
-
-                String messageText = update.getMessage().getText();
-                Long chatId = update.getMessage().getChatId();
-                User currentUser = reader.getUsersHashMap().get(chatId);
-
-                switch (messageText) {
-                    case "/start" -> chatService.start(chatId, update.getMessage().getFrom().getFirstName());
-                    case "/now" -> chatService.sendRatingRightNow(chatId);
-                    default -> {
-                        if (messageText.contains("@") && EmailValidator.isValid(messageText)) {
-                            chatService.createLogin(chatId, update);
-                        } else if (currentUser.getPasswordNBKI().equals("p")
-                                && currentUser.getLoginNBKI().contains("@")) {
-                            chatService.createPassword(chatId, messageText);
-                        } else if (TimeConverter.isTimePeriod(messageText)) {
-                            chatService.createPeriodUpdate(chatId, messageText);
-                        } else {
-                            chatService.wrongFormat(chatId);
-                        }
-                    }
-                }
-            });
+            makeChoose(update);
         }
     }
 
+    private void makeChoose(Update update) {
+        JsonHashMapReader reader = new JsonHashMapReader();
+
+        executorService.submit(() -> {
+
+            String messageText = update.getMessage().getText();
+            Long chatId = update.getMessage().getChatId();
+            User currentUser = reader.getUsersHashMap().get(chatId);
+
+            switch (messageText) {
+                case "/start" -> createUserService.start(chatId, update.getMessage().getFrom().getFirstName());
+                case "Пoлyчить ceйчac\uD83D\uDCF2" -> buttonsClicksReplyService.returnRatingRightNow(chatId);
+                case "Пеpиoд обнoвления⏲\uD83D\uDD04" -> buttonsClicksReplyService.returnTimeList(chatId);
+
+                default -> {
+                    if (EmailValidator.isValid(messageText)) {
+                        createUserService.createLogin(chatId, update);
+                    } else if (currentUser.getPasswordNBKI().equals("null") && EmailValidator.isValid(currentUser.getLoginNBKI())) {
+                        createUserService.createPassword(chatId, messageText);
+                    } else if (TimeConverter.isTimePeriod(messageText)) {
+                        createUserService.createPeriodUpdate(chatId, messageText);
+                    } else {
+                        createUserService.wrongFormat(chatId);
+                    }
+                }
+            }
+        });
+    }
 }

@@ -19,8 +19,8 @@ public class User {
     String loginNBKI;
     String passwordNBKI;
     int refreshPeriodInHours;
-
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime lastUpdate;
     boolean paid;
+    boolean accountSetupComplete;
 }

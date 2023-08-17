@@ -12,22 +12,23 @@ import java.util.HashMap;
 @Component
 public class UpdateUserData {
     private final JsonHashMapWriter writer = new JsonHashMapWriter();
+
     public void createUserLogin(long chatId, Update update) {
         JsonHashMapReader reader = new JsonHashMapReader();
         HashMap<Long, User> userMap = reader.getUsersHashMap();
         User user = new User();
 
-        user.setPasswordNBKI("p");
-        user.setChatId(update.getMessage().getChatId());
-        user.setName(update.getMessage().getFrom().getFirstName());
+        user.setChatId(chatId);
         user.setUserName(update.getMessage().getFrom().getUserName());
+        user.setUserName(update.getMessage().getFrom().getFirstName());
         user.setLoginNBKI(update.getMessage().getText());
-
-        user.setPaid(true);
+        user.setPasswordNBKI("null");
+        user.setRefreshPeriodInHours(0);
         user.setLastUpdate(LocalDateTime.now());
-        userMap.put(chatId, user);
-        user.setRefreshPeriodInHours(24);
+        user.setPaid(false);
+        user.setAccountSetupComplete(false);
 
+        userMap.put(chatId, user);
         writer.writeToFile(userMap);
     }
 
@@ -36,13 +37,15 @@ public class UpdateUserData {
         HashMap<Long, User> userMap = reader.getUsersHashMap();
         User user = userMap.get(chatId);
         user.setPasswordNBKI(password);
+        user.setAccountSetupComplete(true);
+
         writer.writeUserHashMap(user);
     }
 
     public boolean setPeriodUpdate(long chatId, String messageText) {
         int period = TimeConverter.convertToHours(messageText);
 
-        if(period < 1) {
+        if (period < 1) {
             return false;
         } else {
             JsonHashMapReader reader = new JsonHashMapReader();
@@ -54,5 +57,4 @@ public class UpdateUserData {
             return true;
         }
     }
-
 }

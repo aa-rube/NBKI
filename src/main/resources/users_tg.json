@@ -1,22 +1,24 @@
 {
   "0" : {
     "chatId" : 0,
-    "userName" : "",
-    "name" : "",
+    "userName" : "null",
+    "name" : "null",
     "loginNBKI" : "",
-    "passwordNBKI" : "",
-    "refreshPeriodInHours" : 0,
+    "passwordNBKI" : "null",
+    "refreshPeriodInHours" : 1,
     "lastUpdate" : "2023-08-15T23:31:40",
-    "paid" : false
+    "paid" : false,
+    "accountSetupComplete" : true
   },
   "6625045569" : {
     "chatId" : 6625045569,
-    "userName" : null,
-    "name" : "Андрей Рублёв",
-    "loginNBKI" : "onixmore@gmail.com",
-    "passwordNBKI" : "oHfVE3Fg",
-    "refreshPeriodInHours" : 8760,
-    "lastUpdate" : "2023-08-16T02:41:54",
-    "paid" : true
+    "userName" : "Андрей Рублёв",
+    "name" : null,
+    "loginNBKI" : "alexrube93@gmail.com",
+    "passwordNBKI" : "gnjXhOZb7HVz",
+    "refreshPeriodInHours" : 1,
+    "lastUpdate" : "2023-08-16T19:16:20",
+    "paid" : false,
+    "accountSetupComplete" : true
   }
 }
