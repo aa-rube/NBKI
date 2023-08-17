@@ -46,4 +46,8 @@ public class ButtonsClicksReplyService {
         String answer = "Выберите один из временных периодов, представленных ниже:";
         messageSendingService.sendMsg(chatId, answer, keyboardService.getTimePeriods());
     }
+
+    public void setTimeUpdate(long chatId, String time) {
+
+    }
 }

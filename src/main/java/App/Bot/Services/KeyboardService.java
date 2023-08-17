@@ -80,31 +80,31 @@ public class KeyboardService {
 
 
         oneHour.setText("3ч");
-        oneHour.setCallbackData("3 часа");
+        oneHour.setCallbackData("3");
         twoHours.setText("12ч");
-        twoHours.setCallbackData("12 часов");
+        twoHours.setCallbackData("12");
         threeHours.setText("24ч");
-        threeHours.setCallbackData("24 часа");
+        threeHours.setCallbackData("24");
         firstRow.add(oneHour);
         firstRow.add(twoHours);
-        firstRow.add(threeDays);
+        firstRow.add(threeHours);
 
         threeDays.setText("3д");
-        threeDays.setCallbackData("3 дня");
+        threeDays.setCallbackData("72");
         sevenDays.setText("7д");
-        sevenDays.setCallbackData("7 дней");
+        sevenDays.setCallbackData("168");
         fourteenDays.setText("14д");
-        fourteenDays.setCallbackData("14 дней");
+        fourteenDays.setCallbackData("336");
         secondRow.add(threeDays);
         secondRow.add(sevenDays);
         secondRow.add(fourteenDays);
 
         oneMonth.setText("1м");
-        oneMonth.setCallbackData("1 месяц");
+        oneMonth.setCallbackData("720");
         twoMonth.setText("2м");
-        twoMonth.setCallbackData("2 месца");
+        twoMonth.setCallbackData("1440");
         threeMonth.setText("3м");
-        threeMonth.setCallbackData("3 месяца");
+        threeMonth.setCallbackData("2160");
         thirdRow.add(oneMonth);
         thirdRow.add(twoMonth);
         thirdRow.add(threeMonth);

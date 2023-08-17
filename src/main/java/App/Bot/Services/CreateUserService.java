@@ -1,14 +1,11 @@
 package App.Bot.Services;
 
-import App.model.User;
 import App.Bot.functions.UpdateUserData;
-import App.parserNBKI.updateSevice.UpdateRating;
 import App.utils.JsonHashMapReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.HashMap;
 
 @Component
 public class CreateUserService {
@@ -22,29 +19,30 @@ public class CreateUserService {
         this.messageSendingService = messageSendingService;
     }
 
-    public void start(Long chatId, String name) {
+    public void start(Long chatId, String name,Update update) {
         JsonHashMapReader reader = new JsonHashMapReader();
-        if (reader.getUsersHashMap().get(chatId) != null ||
-        !reader.getUsersHashMap().get(chatId).isAccountSetupComplete()){
 
-            String answer = name + ", Ваши данные уже сохранены.";
-            messageSendingService.sendMsg(chatId, answer, keyboardService.getPermanentKeyboard());
-        } else {
+        if (reader.getUsersHashMap().get(chatId) == null) {
+            updateUserData.createUser(chatId, update);
             String answer = "Добро пожаловать в чат-бот НБКИ!\n" +
                     name + ", этот бот создан, чтобы помочь Вам следить за вашим официальным " +
                     "рейтингом в Национальном Бюро Кредитной Истории. " +
                     "Для начала работы, пожалуйста, введите вашу электронную " +
                     "почту, которая привязана к вашему аккаунту в НБКИ.";
             messageSendingService.sendMsg(chatId, answer);
+
+        } else {
+            String answer = name + ", Ваши данные уже сохранены.";
+            messageSendingService.sendMsg(chatId, answer, keyboardService.getPermanentKeyboard());
         }
     }
 
-    public void createLogin(long chatId, Update update) {
+    public void createLogin(long chatId, String email) {
         JsonHashMapReader reader = new JsonHashMapReader();
         if (reader.getUsersHashMap().get(chatId).isAccountSetupComplete()) {
             wrongFormat(chatId);
         } else {
-            updateUserData.createUserLogin(chatId, update);
+            updateUserData.createUserLogin(chatId, email);
             messageSendingService.sendMsg(chatId, "Спасибо за информацию. Введите теперь Ваш пароль:");
         }
     }

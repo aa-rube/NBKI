@@ -13,11 +13,11 @@ import java.util.HashMap;
 public class UpdateUserData {
     private final JsonHashMapWriter writer = new JsonHashMapWriter();
 
-    public void createUserLogin(long chatId, Update update) {
+    public void createUser(long chatId, Update update) {
         JsonHashMapReader reader = new JsonHashMapReader();
         HashMap<Long, User> userMap = reader.getUsersHashMap();
-        User user = new User();
 
+        User user = new User();
         user.setChatId(chatId);
         user.setUserName(update.getMessage().getFrom().getUserName());
         user.setUserName(update.getMessage().getFrom().getFirstName());
@@ -30,6 +30,15 @@ public class UpdateUserData {
 
         userMap.put(chatId, user);
         writer.writeToFile(userMap);
+    }
+
+    public void createUserLogin(long chatId, String email) {
+        JsonHashMapReader reader = new JsonHashMapReader();
+        HashMap<Long, User> userMap = reader.getUsersHashMap();
+        User user = userMap.get(chatId);
+        user.setLoginNBKI(email);
+
+        writer.writeUserHashMap(user);
     }
 
     public void createPassword(long chatId, String password) {
@@ -56,5 +65,14 @@ public class UpdateUserData {
             writer.writeUserHashMap(user);
             return true;
         }
+    }
+
+    public void changeUpdateTime(long chatId, int countHours) {
+        JsonHashMapReader reader = new JsonHashMapReader();
+        HashMap<Long, User> userMap = reader.getUsersHashMap();
+        User user = userMap.get(chatId);
+        user.setRefreshPeriodInHours(countHours);
+
+        writer.writeUserHashMap(user);
     }
 }
