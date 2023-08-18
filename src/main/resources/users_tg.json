@@ -9,38 +9,5 @@
     "lastUpdate" : "2023-08-15T23:31:40",
     "paid" : false,
     "accountSetupComplete" : true
-  },
-  "6625045569" : {
-    "chatId" : 6625045569,
-    "userName" : "Андрей Рублёв",
-    "name" : null,
-    "loginNBKI" : "alexrube93@gmail.com",
-    "passwordNBKI" : "gnjXhOZb7HVz",
-    "refreshPeriodInHours" : 1,
-    "lastUpdate" : "2023-08-16T19:16:20",
-    "paid" : true,
-    "accountSetupComplete" : true
-  },
-  "5451244591" : {
-    "chatId" : 5451244591,
-    "userName" : "Jon",
-    "name" : null,
-    "loginNBKI" : "/start",
-    "passwordNBKI" : "null",
-    "refreshPeriodInHours" : 0,
-    "lastUpdate" : "2023-08-17T07:57:31",
-    "paid" : false,
-    "accountSetupComplete" : false
-  },
-  "795363892" : {
-    "chatId" : 795363892,
-    "userName" : "Александр",
-    "name" : true,
-    "loginNBKI" : "alexrube93@gmail.com",
-    "passwordNBKI" : "gnjXhOZb7HVz",
-    "refreshPeriodInHours" : 1,
-    "lastUpdate" : "2023-08-16T22:01:40",
-    "paid" : false,
-    "accountSetupComplete" : true
   }
 }
