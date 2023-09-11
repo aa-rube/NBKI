@@ -1,6 +1,6 @@
 package App.Bot.controller;
 
-import App.model.FkNotification;
+import App.Bot.model.FkNotification;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,8 +9,6 @@ public class PayController {
     @PostMapping("/fkpayment_notification")
     public String notification(@ModelAttribute FkNotification notification) {
         System.out.println(notification);
-
-
         return "YES";
     }
 
