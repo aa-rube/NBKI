@@ -9,6 +9,8 @@ import App.Bot.functions.EmailValidator;
 import App.Bot.functions.UserService;
 import App.Bot.model.PromoCode;
 import App.Bot.model.UserNBKI;
+import App.p2pkassa.model.PayData;
+import App.p2pkassa.model.UserOrder;
 import App.parserNBKI.ParserManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,7 @@ import java.util.*;
 
 @Controller
 public class Chat extends TelegramLongPollingBot {
-
-    private final  HashSet<Long> hasPromo = new HashSet<>();
+    private final HashSet<Long> hasPromo = new HashSet<>();
     private final HashSet<Long> waitEmail = new HashSet<>();
     private final HashSet<Long> waitPass = new HashSet<>();
     private final HashMap<Long, Integer> chatIdMsgId = new HashMap<>();
@@ -75,10 +76,7 @@ public class Chat extends TelegramLongPollingBot {
     private void messageTextHandle(Update update) {
         String text = update.getMessage().getText();
         Long chatId = update.getMessage().getChatId();
-        chatIdMsgId.put(chatId, update.getMessage().getMessageId());
-        if(text.contains("мec ₽")) {
 
-        }
         if (hasPromo.contains(chatId)) {
             hasPromo.remove(chatId);
             PromoCode code = data.getPromoInfo(text);
@@ -91,13 +89,13 @@ public class Chat extends TelegramLongPollingBot {
             return;
         }
 
-        if (text.equals(Buttons.YES.getStr())) {
+        if (text.equals(Buttons.I_HAVE_PROMO.getStr())) {
             hasPromo.add(chatId);
             sendMsg(chatId, data.getInputYouPromo());
             return;
         }
 
-        if (text.equals(Buttons.NO.getStr())) {
+        if (text.equals(Buttons.I_DONT_HAVE_PROMO.getStr())) {
             sendMsg(chatId, data.getChooseOption(), keyboard.getSubscriptionsButtons(1));
             return;
         }
@@ -107,7 +105,7 @@ public class Chat extends TelegramLongPollingBot {
             return;
         }
 
-        if(text.equals(Buttons.WIPE_ALL_DATA.getStr())) {
+        if (text.equals(Buttons.WIPE_ALL_DATA.getStr())) {
             sendMsg(chatId, data.getDoYouSure(), keyboard.questionSure());
             return;
         }
@@ -118,7 +116,7 @@ public class Chat extends TelegramLongPollingBot {
         }
 
         if (text.equals(Buttons.SETTINGS.getStr())) {
-            sendMsg(chatId, data.getSettingType(),keyboard.getSettingsKeyBoard());
+            sendMsg(chatId, data.getSettingType(), keyboard.getSettingsKeyBoard());
             return;
         }
 
@@ -171,11 +169,32 @@ public class Chat extends TelegramLongPollingBot {
     }
 
     public void callbackQuery(Update update) {
-        String callbackData = update.getCallbackQuery().getData();
+        String buttonData = update.getCallbackQuery().getData();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         int messageId = update.getCallbackQuery().getMessage().getMessageId();
-        chatIdMsgId.put(chatId, messageId);
 
+        if (buttonData.contains(PayData.CARD.getStr()) || buttonData.contains(PayData.SBP.getStr())) {
+            UserOrder userOrderResult = data.getPayInformation(chatId, buttonData);
+            String msg = null;
+
+            if (userOrderResult != null) {
+                msg = userOrderResult.getMsg();
+            }
+
+            editMessageKeyboard(chatId, chatIdMsgId.get(chatId), msg == null ? "smthng went wrong" : msg, null);
+            return;
+        }
+
+
+        if (buttonData.contains("₽")) {
+            double amount = Double.parseDouble(buttonData.trim().split("₽")[1]);
+            editMessageKeyboard(chatId, messageId, data.getPayOptions(), keyboard.getPayOptions(amount));
+            return;
+        }
+
+        if (buttonData.contains(Buttons.CLOSE.getStr())) {
+            deleteMessage(chatId, chatIdMsgId.get(chatId));
+        }
     }
 
     @Scheduled(fixedRate = 600000)
@@ -263,7 +282,11 @@ public class Chat extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
-        executeMsg(message);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendMsg(Long chatId, String message, ReplyKeyboardMarkup keyboardMarkup) {
@@ -272,7 +295,11 @@ public class Chat extends TelegramLongPollingBot {
         sendMessage.setText(message);
 
         sendMessage.setReplyMarkup(keyboardMarkup);
-        executeMsg(sendMessage);
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendMsg(Long chatId, String message, InlineKeyboardMarkup inlineKeyboard) {
@@ -280,7 +307,13 @@ public class Chat extends TelegramLongPollingBot {
         sendMessage.setChatId(chatId.toString());
         sendMessage.setText(message);
         sendMessage.setReplyMarkup(inlineKeyboard);
-        executeMsg(sendMessage);
+
+        try {
+            Message sentMessage = execute(sendMessage);
+            chatIdMsgId.put(chatId, sentMessage.getMessageId());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteMessage(Long chatId, int msgId) {
@@ -290,14 +323,6 @@ public class Chat extends TelegramLongPollingBot {
 
         try {
             execute(deleteMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void executeMsg(SendMessage sendMessage) {
-        try {
-            execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

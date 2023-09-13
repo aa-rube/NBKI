@@ -1,5 +1,6 @@
 package App.Bot.content;
 
+import App.p2pkassa.model.PayData;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -114,8 +115,8 @@ public class Keyboards {
         List<KeyboardRow> rowList = new ArrayList<>();
         KeyboardRow row = new KeyboardRow();
 
-        row.add(new KeyboardButton(Buttons.YES.getStr()));
-        row.add(new KeyboardButton(Buttons.NO.getStr()));
+        row.add(new KeyboardButton(Buttons.I_HAVE_PROMO.getStr()));
+        row.add(new KeyboardButton(Buttons.I_DONT_HAVE_PROMO.getStr()));
 
         rowList.add(row);
 
@@ -124,20 +125,62 @@ public class Keyboards {
         return replyKeyboard;
     }
 
-    public ReplyKeyboardMarkup getSubscriptionsButtons(double d) {
-        List<KeyboardRow> rowList = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        KeyboardRow row2 = new KeyboardRow();
+    public InlineKeyboardMarkup getSubscriptionsButtons(double d) {
+        InlineKeyboardMarkup inLineKeyBoard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+        List<InlineKeyboardButton> secondRow = new ArrayList<>();
 
-        row.add(new KeyboardButton(Buttons.TP_1M.getStr() + 199 * d));
-        row.add(new KeyboardButton(Buttons.TP_6M.getStr() + 699 * d));
-        row.add(new KeyboardButton(Buttons.TP_12M.getStr() + 1299 * d));
-        row2.add(new KeyboardButton(Buttons.GET_BACK.getStr()));
-        rowList.add(row);
-        rowList.add(row2);
+        InlineKeyboardButton six = new InlineKeyboardButton();
+        InlineKeyboardButton twelve = new InlineKeyboardButton();
+        InlineKeyboardButton back = new InlineKeyboardButton();
 
-        ReplyKeyboardMarkup replyKeyboard = getReplyKeyboard();
-        replyKeyboard.setKeyboard(rowList);
-        return replyKeyboard;
+        six.setText(Buttons.TP_6M.getStr() + 199 * d);
+        six.setCallbackData(Buttons.TP_6M.getStr() + 199 * d);
+        twelve.setText(Buttons.TP_12M.getStr() + 699 * d);
+        twelve.setCallbackData(Buttons.TP_12M.getStr() + 699 * d);
+        back.setText(Buttons.GET_BACK.getStr());
+        back.setCallbackData(Buttons.GET_BACK.getStr());
+
+        firstRow.add(six);
+        firstRow.add(twelve);
+        secondRow.add(back);
+
+        keyboardMatrix.add(firstRow);
+        keyboardMatrix.add(secondRow);
+
+        inLineKeyBoard.setKeyboard(keyboardMatrix);
+        return inLineKeyBoard;
+    }
+
+    public InlineKeyboardMarkup getPayOptions(double amount) {
+        InlineKeyboardMarkup inLineKeyBoard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+
+        List<InlineKeyboardButton> secondRow = new ArrayList<>();
+
+        InlineKeyboardButton card = new InlineKeyboardButton();
+        InlineKeyboardButton sbp = new InlineKeyboardButton();
+        InlineKeyboardButton close = new InlineKeyboardButton();
+
+        card.setText(Buttons.PAY_CARD.getStr());
+        card.setCallbackData(PayData.CARD.getStr() + ":" + amount);
+
+        sbp.setText(Buttons.PAY_SBP.getStr());
+        sbp.setCallbackData(PayData.SBP.getStr() + ":" + amount);
+
+        close.setText(Buttons.CLOSE.getStr());
+        close.setCallbackData(Buttons.CLOSE.getStr());
+
+        firstRow.add(card);
+        firstRow.add(sbp);
+        secondRow.add(close);
+
+        keyboardMatrix.add(firstRow);
+        keyboardMatrix.add(secondRow);
+
+        inLineKeyBoard.setKeyboard(keyboardMatrix);
+        return inLineKeyBoard;
     }
 }

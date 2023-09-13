@@ -14,4 +14,17 @@ public class BotConfig {
     @Value("${bot.token}")
     String token;
 
+    @Value("${p2p.kassa.key}")
+    String p2pKassaKey;
+
+    @Value("${p2p.kassa.project.id}")
+    String p2pKassaProjectId;
+
+    @Value("${p2p.kassa.json.link.one}")
+    String p2pUrlOne;
+    @Value("${p2p.kassa.json.link.two}")
+    String p2pUrlTwo;
+
+    @Value("${p2p.kassa.check.pay}")
+    String p2pKassaUrlCheckPay;
 }

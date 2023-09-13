@@ -9,11 +9,14 @@ public enum Buttons {
     GET_BACK("Назад"),
     I_AM_SURE_WIPE_ALL_SATA("Дa, удaлить вce!"),
     NO_NO_NO("Закрыть, ничего не удалять"),
-    YES("У меня есть промокод"),
-    NO("У меня нет промокода"),
+    I_HAVE_PROMO("У меня есть промокод"),
+    I_DONT_HAVE_PROMO("У меня нет промокода"),
     TP_1M("1мec ₽"),
     TP_6M("6мес ₽"),
-    TP_12M("12мeс ₽");
+    TP_12M("12мeс ₽"),
+    PAY_CARD("Перевод на карту"),
+    PAY_SBP("Перевод по телефону"),
+    CLOSE("Закрыть");
 
     private final String str;
 

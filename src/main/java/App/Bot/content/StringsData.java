@@ -2,10 +2,19 @@ package App.Bot.content;
 
 import App.Bot.functions.PromoCodeService;
 import App.Bot.model.PromoCode;
+import App.p2pkassa.HandleUsersData;
+import App.p2pkassa.PayInform;
+import App.p2pkassa.model.PaymentInfo;
+import App.p2pkassa.model.UserOrder;
+import App.p2pkassa.model.PayData;
+import App.p2pkassa.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Getter
@@ -13,6 +22,8 @@ import java.util.Optional;
 public class StringsData {
     @Autowired
     private PromoCodeService promo;
+    @Autowired
+    private HandleUsersData handle;
 
     public final String afterEmail = "Спасибо за информацию. Введите теперь Ваш пароль:";
     public final String wrongFormat = "Не верный формат. Попробуйте пожалуйста еще раз.";
@@ -30,6 +41,8 @@ public class StringsData {
     public final String inputYouPromo = "Введите Ваш промокод:";
     public final String promoDoesNotExist = "Промокод не существует :(";
     public final String hooray = "Ура! Промокод найден!";
+    public final String payOptions = "Выберите способ платежа:";
+
     public String getWelcomeMsg(String name) {
         return name + "! Добро пожаловать в чат-бот НБКИ!\n"
                 + "Этот бот создан, чтобы помочь Вам следить за вашим официальным "
@@ -48,5 +61,14 @@ public class StringsData {
     public PromoCode getPromoInfo(String text) {
         Optional<PromoCode> promoOpt = promo.getPromoCode(text);
         return promoOpt.orElse(null);
+    }
+
+    public String getTimerString(Long chatId) {
+
+        return "";
+    }
+
+    public UserOrder getPayInformation(long chatId, String buttonData) {
+        return handle.getPayInformation(chatId, buttonData);
     }
 }
