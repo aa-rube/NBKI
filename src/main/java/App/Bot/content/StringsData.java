@@ -3,18 +3,11 @@ package App.Bot.content;
 import App.Bot.functions.PromoCodeService;
 import App.Bot.model.PromoCode;
 import App.p2pkassa.HandleUsersData;
-import App.p2pkassa.PayInform;
-import App.p2pkassa.model.PaymentInfo;
 import App.p2pkassa.model.UserOrder;
-import App.p2pkassa.model.PayData;
-import App.p2pkassa.service.OrderService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Getter
@@ -42,6 +35,7 @@ public class StringsData {
     public final String promoDoesNotExist = "Промокод не существует :(";
     public final String hooray = "Ура! Промокод найден!";
     public final String payOptions = "Выберите способ платежа:";
+    public final String wrongMsg = "Ошибка при получении реквизитов. Попробуйте позже.";
 
     public String getWelcomeMsg(String name) {
         return name + "! Добро пожаловать в чат-бот НБКИ!\n"
@@ -68,7 +62,23 @@ public class StringsData {
         return "";
     }
 
-    public UserOrder getPayInformation(long chatId, String buttonData) {
-        return handle.getPayInformation(chatId, buttonData);
+    public UserOrder getPayInformation(long chatId, String buttonData, int msgId) {
+        return handle.getPayInformation(chatId, buttonData, msgId);
+    }
+
+    public int approveThePay(String buttonData) {
+        String result = handle.getPayStatus(buttonData).split(":")[4];
+        if (result.contains("PAID")) {
+            return 2;
+        }
+
+        if (result.contains("WAIT")) {
+            return 1;
+        }
+
+        if (result.equals("CANCEL")) {
+            return 0;
+        }
+        return -1;
     }
 }

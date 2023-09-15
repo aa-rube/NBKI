@@ -87,4 +87,8 @@ public class UserService {
     public void saveAllUsers(List<UserNBKI> updateUsers) {
         userRepository.saveAll(updateUsers);
     }
+
+    public void save(UserNBKI u) {
+        userRepository.save(u);
+    }
 }

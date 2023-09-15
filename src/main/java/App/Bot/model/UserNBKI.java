@@ -37,4 +37,7 @@ public class UserNBKI {
 
     @Column(name = "is_paid")
     boolean paid;
+
+    @Column(name = "end_subscription_time")
+    LocalDateTime endSubscriptionTime;
 }

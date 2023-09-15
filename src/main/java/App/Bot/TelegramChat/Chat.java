@@ -29,6 +29,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,6 +39,7 @@ public class Chat extends TelegramLongPollingBot {
     private final HashSet<Long> waitEmail = new HashSet<>();
     private final HashSet<Long> waitPass = new HashSet<>();
     private final HashMap<Long, Integer> chatIdMsgId = new HashMap<>();
+    private final HashMap<Long, UserOrder> listWaitingForPay = new HashMap<>();
     @Autowired
     private BotConfig botConfig;
     @Autowired
@@ -173,22 +175,68 @@ public class Chat extends TelegramLongPollingBot {
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         int messageId = update.getCallbackQuery().getMessage().getMessageId();
 
-        if (buttonData.contains(PayData.CARD.getStr()) || buttonData.contains(PayData.SBP.getStr())) {
-            UserOrder userOrderResult = data.getPayInformation(chatId, buttonData);
-            String msg = null;
+        if (buttonData.contains(Buttons.I_MADE_THIS_PAY.getStr())) {
+            int oldMsgId = chatIdMsgId.get(chatId);
+            editMsg(chatId, oldMsgId, "Проверяем оплату...", null);
+            int result = data.approveThePay(buttonData);
 
-            if (userOrderResult != null) {
-                msg = userOrderResult.getMsg();
+            if (result == 2){
+                editMsg(chatId, chatIdMsgId.get(chatId),"Оплата получена!", null);
+                sendMsg(chatId, "Теперь можно запрашивать рейтинг!", keyboard.getMainKeyboard());
+                listWaitingForPay.remove(chatId);
+
+                UserNBKI u = userService.findUserNBKIByChatId(chatId).get();
+                u.setPaid(true);
+
+                if(u.getEndSubscriptionTime() == null) {
+                    u.setEndSubscriptionTime(LocalDateTime.now().plusMonths(listWaitingForPay.get(chatId).getMonthCount()));
+                } else {
+                    LocalDateTime time = u.getEndSubscriptionTime();
+                    time.plusMonths(listWaitingForPay.get(chatId).getMonthCount());
+                    u.setEndSubscriptionTime(time);
+                }
+                userService.save(u);
             }
 
-            editMessageKeyboard(chatId, chatIdMsgId.get(chatId), msg == null ? "smthng went wrong" : msg, null);
+            if(result == 1) {
+                UserOrder order = listWaitingForPay.get(chatId);
+                Duration duration = Duration.between(order.getTimeCreated(), LocalDateTime.now());
+                int differenceInMinutes = (int) duration.toMinutes();
+                int timeLeft = 30 - differenceInMinutes;
+                editMsg(order.getChatId(), oldMsgId, order.getMsg() + "\nОплата еще не прошла:(",
+                        keyboard.iSendMyMoney(order.getChatId(), timeLeft, order.getRemotePaymentOrderId()));
+                return;
+            }
+
+            if (result == 0) {
+                UserOrder order = listWaitingForPay.get(chatId);
+                listWaitingForPay.remove(chatId);
+                editMsg(order.getChatId(), oldMsgId, "Платеж откланен", null);
+                sendMsg(chatId, "Вы можете попробовать снова!", keyboard.getMainKeyboard());
+            }
+            if (result == -1) {
+                System.out.println("wtf");
+            }
+        }
+
+        if (buttonData.contains(PayData.CARD.getStr()) || buttonData.contains(PayData.SBP.getStr())) {
+            UserOrder userOrderResult = data.getPayInformation(chatId, buttonData, chatIdMsgId.get(chatId));
+
+            if (userOrderResult != null) {
+                editMsg(chatId, chatIdMsgId.get(chatId), userOrderResult.getMsg(),
+                        keyboard.iSendMyMoney(chatId, 30, userOrderResult.getRemotePaymentOrderId()));
+
+                listWaitingForPay.put(chatId, userOrderResult);
+                return;
+            }
+            editMsg(chatId, chatIdMsgId.get(chatId), data.getWrongMsg(), null);
+
             return;
         }
 
-
         if (buttonData.contains("₽")) {
             double amount = Double.parseDouble(buttonData.trim().split("₽")[1]);
-            editMessageKeyboard(chatId, messageId, data.getPayOptions(), keyboard.getPayOptions(amount));
+            editMsg(chatId, messageId, data.getPayOptions(), keyboard.getPayOptions(amount, buttonData));
             return;
         }
 
@@ -210,6 +258,31 @@ public class Chat extends TelegramLongPollingBot {
         }
 
         userService.saveAllUsers(users);
+    }
+
+    @Scheduled(fixedRate = 60001)
+    private void updateButtonTime() {
+
+        Iterator<UserOrder> iterator = listWaitingForPay.values().iterator();
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        while (iterator.hasNext()) {
+            UserOrder order = iterator.next();
+            LocalDateTime pastDateTime = order.getTimeCreated();
+            int msgId = order.getMsgId();
+
+            Duration duration = Duration.between(pastDateTime, currentDateTime);
+            int differenceInMinutes = (int) duration.toMinutes();
+            int timeLeft = 30 - differenceInMinutes;
+
+            if (timeLeft > 0) {
+                editMsg(order.getChatId(), msgId, order.getMsg(),
+                        keyboard.iSendMyMoney(order.getChatId(), timeLeft, order.getRemotePaymentOrderId()));
+            } else {
+                editMsg(order.getChatId(), msgId, order.getMsg(),null);
+                iterator.remove();
+            }
+        }
     }
 
 
@@ -252,7 +325,7 @@ public class Chat extends TelegramLongPollingBot {
         }
     }
 
-    private void editMessageKeyboard(Long chatId, int messageId, String content, InlineKeyboardMarkup keyboard) {
+    private void editMsg(Long chatId, int messageId, String content, InlineKeyboardMarkup keyboard) {
         EditMessageText newMessage = new EditMessageText();
         newMessage.setChatId(chatId);
         newMessage.setMessageId(messageId);
@@ -327,4 +400,6 @@ public class Chat extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+
+
 }

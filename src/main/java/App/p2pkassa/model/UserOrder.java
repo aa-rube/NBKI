@@ -29,4 +29,7 @@ public class UserOrder {
     private double amount;
     private String method;
     private String msg;
+    private Long chatId;
+    private int msgId;
+    private int monthCount;
 }

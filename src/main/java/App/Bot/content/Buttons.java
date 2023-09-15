@@ -11,12 +11,13 @@ public enum Buttons {
     NO_NO_NO("Закрыть, ничего не удалять"),
     I_HAVE_PROMO("У меня есть промокод"),
     I_DONT_HAVE_PROMO("У меня нет промокода"),
-    TP_1M("1мec ₽"),
+    TP_1M("1мес ₽"),
     TP_6M("6мес ₽"),
     TP_12M("12мeс ₽"),
     PAY_CARD("Перевод на карту"),
     PAY_SBP("Перевод по телефону"),
-    CLOSE("Закрыть");
+    CLOSE("Закрыть"),
+    I_MADE_THIS_PAY("iMadeThePay:");
 
     private final String str;
 

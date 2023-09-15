@@ -19,7 +19,8 @@ public class HandleUsersData {
     @Autowired
     private PayInform payInfo;
 
-    public UserOrder getPayInformation(long chatId, String buttonData) {
+    public UserOrder getPayInformation(long chatId, String buttonData, int msgId) {
+        System.out.println(buttonData);
         try {
             String[] data = buttonData.split(":");
             LocalDateTime now = LocalDateTime.now();
@@ -34,6 +35,9 @@ public class HandleUsersData {
                 userOrder.setAmount(Double.parseDouble(data[1]));
                 userOrder.setCurrency(PayData.RUB.getStr());
                 userOrder.setMethod(PayData.CARD.getStr());
+                userOrder.setMsgId(msgId);
+                userOrder.setChatId(chatId);
+                userOrder.setMonthCount(Integer.parseInt(data[2]));
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 PaymentInfo info = objectMapper.readValue(payInfo.getPayDetails(userOrder), PaymentInfo.class);
@@ -60,6 +64,9 @@ public class HandleUsersData {
                 userOrder.setAmount(Double.parseDouble(data[1]));
                 userOrder.setCurrency(PayData.RUB.getStr());
                 userOrder.setMethod(PayData.SBP.getStr());
+                userOrder.setMsgId(msgId);
+                userOrder.setChatId(chatId);
+                userOrder.setMonthCount(Integer.parseInt(data[2]));
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 PaymentInfo info = objectMapper.readValue(payInfo.getPayDetails(userOrder), PaymentInfo.class);
@@ -80,5 +87,9 @@ public class HandleUsersData {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public String getPayStatus(String buttonData) {
+        return payInfo.getPayResult(buttonData.split(":")[2]);
     }
 }

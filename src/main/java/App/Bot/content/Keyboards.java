@@ -135,8 +135,8 @@ public class Keyboards {
         InlineKeyboardButton twelve = new InlineKeyboardButton();
         InlineKeyboardButton back = new InlineKeyboardButton();
 
-        six.setText(Buttons.TP_6M.getStr() + 199 * d);
-        six.setCallbackData(Buttons.TP_6M.getStr() + 199 * d);
+        six.setText(Buttons.TP_6M.getStr() + 399 * d);
+        six.setCallbackData(Buttons.TP_6M.getStr() + 399 * d);
         twelve.setText(Buttons.TP_12M.getStr() + 699 * d);
         twelve.setCallbackData(Buttons.TP_12M.getStr() + 699 * d);
         back.setText(Buttons.GET_BACK.getStr());
@@ -153,7 +153,7 @@ public class Keyboards {
         return inLineKeyBoard;
     }
 
-    public InlineKeyboardMarkup getPayOptions(double amount) {
+    public InlineKeyboardMarkup getPayOptions(double amount, String buttonData) {
         InlineKeyboardMarkup inLineKeyBoard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
         List<InlineKeyboardButton> firstRow = new ArrayList<>();
@@ -164,11 +164,13 @@ public class Keyboards {
         InlineKeyboardButton sbp = new InlineKeyboardButton();
         InlineKeyboardButton close = new InlineKeyboardButton();
 
+        String s = String.valueOf((buttonData.split("₽")[0]).trim().split("м")[0]);
+        System.out.println(s);
         card.setText(Buttons.PAY_CARD.getStr());
-        card.setCallbackData(PayData.CARD.getStr() + ":" + amount);
+        card.setCallbackData(PayData.CARD.getStr() + ":" + amount + ":" + s);
 
         sbp.setText(Buttons.PAY_SBP.getStr());
-        sbp.setCallbackData(PayData.SBP.getStr() + ":" + amount);
+        sbp.setCallbackData(PayData.SBP.getStr() + ":" + amount + ":" + s);
 
         close.setText(Buttons.CLOSE.getStr());
         close.setCallbackData(Buttons.CLOSE.getStr());
@@ -180,6 +182,20 @@ public class Keyboards {
         keyboardMatrix.add(firstRow);
         keyboardMatrix.add(secondRow);
 
+        inLineKeyBoard.setKeyboard(keyboardMatrix);
+        return inLineKeyBoard;
+    }
+
+    public InlineKeyboardMarkup iSendMyMoney(Long chatId, int t, int remoteOrderId) {
+        InlineKeyboardMarkup inLineKeyBoard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+
+        InlineKeyboardButton card = new InlineKeyboardButton();
+        card.setText("Осталось " + t + "минут. Нaжать, если платеж внесен.");
+        card.setCallbackData(Buttons.I_MADE_THIS_PAY.getStr() + chatId + ":" + remoteOrderId);
+        firstRow.add(card);
+        keyboardMatrix.add(firstRow);
         inLineKeyBoard.setKeyboard(keyboardMatrix);
         return inLineKeyBoard;
     }
